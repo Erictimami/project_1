@@ -9,11 +9,13 @@ EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 #opening the app using Flask
 app = Flask(__name__)
 bcrypt = Bcrypt(app) 
+
 app.secret_key="dajlhayjsvsckjfk" #secret key for opening the session
 
 @app.route('/log_off')
 def log_off():
     session.clear()
+    print('Im going to be off')
     flash("You have been logged out", 'logged_out')
     return redirect('/')
 
