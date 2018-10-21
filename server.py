@@ -20,9 +20,10 @@ def log_off():
 
 @app.route('/')
 def index():  
-    if ('logged' or 'id') not in session:
+    if ('logged' or 'id' or 'first_name') not in session:
         session['logged']=False
         session['id']=0
+        session['first_name']=""
     elif session['logged']==None:
         flash("You have been logged out", 'logged_out')
     return render_template("index.html")
@@ -86,14 +87,15 @@ def process_registration():
         id_new_user=mysql.query_db(insert_query, data)
         print(id_new_user)
         
-        if ('logged' or 'id') not in session:
+        if ('logged' or 'id' or 'first_name') not in session:
+            session['first_name']=request.form['first_name']
             session['logged']= True
             session['id']=id_new_user
-            return redirect('/wall')
         else:
             session['logged']= True
             session['id']=id_new_user
-            return redirect('/wall')
+            session['first_name']=request.form['first_name']
+        return redirect('/wall')
 
 @app.route('/process_login', methods=['POST'])
 def process_loggin():
@@ -106,7 +108,7 @@ def process_loggin():
         return redirect('/')
     else:
         mysql = connectToMySQL('simple_wall_db')
-        query = "SELECT users.email, users.password, users.id FROM users WHERE users.email=%(new_email)s;"
+        query = "SELECT users.email, users.password, users.first_name, users.created_at, users.id FROM users WHERE users.email=%(new_email)s;"
         data = {"new_email": request.form['email'].strip().lower() }
 
         print('$$$$$$$$$$$$$$$$$$$$$$$$$$ new_email', data)
@@ -120,12 +122,10 @@ def process_loggin():
             print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@', result_data)
             session['id'] = result_data[0]['id']
             session['logged']=True
+            session['first_name']=result_data[0]['first_name']
             return redirect('/wall')
     flash("Email and/or password are INVALID!", 'login')
     return redirect('/')
-
-
-
 
 
 
@@ -181,7 +181,6 @@ def wall():
         count_msg_s=0
     else:
         count_msg_s=result_count_msg_s[0]['count_msg_s']
-
     return render_template("wall.html", first_name=first_name, count_msg_r=count_msg_r, result_s_msg=result_s_msg, count_msg_s=count_msg_s, result_others_users=result_others_users, num_o_u=len(result_others_users))
 
 

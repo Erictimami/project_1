@@ -11,12 +11,12 @@
     <div class="container">
         <div class="header">
           <h4>CodingDojo Wall (simplified)</h4>
-          <h6> Welcome {{first_name}} </h6>
+          <h6> Welcome {{session['first_name']}} </h6>
           <a href='/log_off'>Log off</a>
         </div>
         <div class="main_content">
           <div class='messages_user'>
-            <h6>  {{count_msg_r}} Message(s) for you ({{first_name}})</h6>
+            <h6>  {{count_msg_r}} Message(s) for you ({{session['first_name']}})</h6>
             {% if result_s_msg %}
             {% for data in result_s_msg %}
             <div class="container_msg_from">
@@ -29,8 +29,7 @@
             {% endfor %}
             {% endif %}
           </div>
-
-          
+        
           <div class='sending_area'>
             <h6>Send a message.</h6>
             <P> You have sent a total of {{ count_msg_s }} messages so far.</P>
